@@ -37,7 +37,6 @@ public class DecisionTreeImpl extends DecisionTree {
     this.attributeValues = train.attributeValues;
 
     root = DecisionTreeLearning(train.instances ,this.attributes, null, null);
-    System.out.println(1);
   }
 
 
@@ -100,7 +99,7 @@ public class DecisionTreeImpl extends DecisionTree {
       atts_vals_examples = getInstancesWithAttrVal(instances,attributes, max_att_name, max_att_unique_val);
       List<String> attributes_new = new ArrayList<String>(attributes);
       attributes_new.remove(getIndexByValue(attributes, max_att_name));
-      subtree = DecisionTreeLearning(atts_vals_examples, attributes_new, instances, max_att_name);
+      subtree = DecisionTreeLearning(atts_vals_examples, attributes_new, instances, max_att_unique_val);
       tree.addChild(subtree);
     }
     return tree;
@@ -117,7 +116,7 @@ public class DecisionTreeImpl extends DecisionTree {
   }
 
   private String getMaxEntropyAtt(List<Instance> instances, List<String> attributes){
-    double current_att_e = 0;
+    double current_att_e;
     double max_att_e =-1;
     String max_att_name="";
 
@@ -139,11 +138,10 @@ public class DecisionTreeImpl extends DecisionTree {
 
   private String classify(DecTreeNode node, Instance instance){
     String label = null;
-    int attr_idx = getAttributeIndex(node.attribute);
     if(node.terminal){
       return node.label;
     }
-
+    int attr_idx = getAttributeIndex(node.attribute);
     for(DecTreeNode child : node.children){
       if(child.parentAttributeValue.equals(instance.attributes.get(attr_idx))){
         label = classify(child, instance);
@@ -235,7 +233,7 @@ public class DecisionTreeImpl extends DecisionTree {
     int true_label = 0;
     int count=0;
     for (Instance instance : test.instances) {
-      if(classify(instance).equals(test.labels.get(count))){
+      if(classify(instance).equals(test.instances.get(count).label)){
         true_label++;
       }
       count++;
