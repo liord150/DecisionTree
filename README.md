@@ -1,7 +1,7 @@
 # DecisionTreeLearning Algorithm Implementation :deciduous_tree:
-###CS540 assignment
+### CS540 assignment
 
-###Implemented functions:
+### Implemented functions:
 1. **DecisionTreeImpl** - this is a recursive function, built according to figure 18.5, returns a decision tree.
 
     we have helper functions:
