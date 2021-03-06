@@ -41,18 +41,18 @@ public class DecisionTreeImpl extends DecisionTree {
 
 
   private String pluralityClass(List<Instance> instances){
-    Map <String,Integer> att_count = new HashMap<>();
+    Map <String,Integer> labels_count = new HashMap<>();
     Integer count;
 
     for(Instance instance : instances){
-      count = att_count.get(instance.label);
+      count = labels_count.get(instance.label);
       if (count == null)
         count = 0;
-      att_count.put(instance.label, count+1);
+      labels_count.put(instance.label, count+1);
     }
 
-    int max=(Collections.max(att_count.values()));  // This will return max value in the Hashmap
-    for (Map.Entry<String, Integer> entry : att_count.entrySet()) {
+    int max=(Collections.max(labels_count.values()));  // This will return max value in the Hashmap
+    for (Map.Entry<String, Integer> entry : labels_count.entrySet()) {
       if (entry.getValue()==max) {
         return entry.getKey();
       }
@@ -88,16 +88,16 @@ public class DecisionTreeImpl extends DecisionTree {
       return new DecTreeNode(label, null, parent_attr, true);
     }
 
+    DecTreeNode subtree;
     String max_att_name = getMaxEntropyAtt(instances, attributes);
     DecTreeNode tree = new DecTreeNode(null, max_att_name, parent_attr, false);
-    DecTreeNode subtree=null;
     List<String> max_att_values = this.attributeValues.get(max_att_name);
-    Set<String> max_att_unique_vals = new HashSet<String>(max_att_values);
+    Set<String> max_att_unique_vals = new HashSet<>(max_att_values);
     List<Instance> atts_vals_examples;
 
     for (String max_att_unique_val: max_att_unique_vals){
       atts_vals_examples = getInstancesWithAttrVal(instances,attributes, max_att_name, max_att_unique_val);
-      List<String> attributes_new = new ArrayList<String>(attributes);
+      List<String> attributes_new = new ArrayList<>(attributes);
       attributes_new.remove(getIndexByValue(attributes, max_att_name));
       subtree = DecisionTreeLearning(atts_vals_examples, attributes_new, instances, max_att_unique_val);
       tree.addChild(subtree);
