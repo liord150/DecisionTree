@@ -71,32 +71,32 @@ public class DecisionTreeImpl extends DecisionTree {
   }
 
 
-  private DecTreeNode DecisionTreeLearning(List<Instance> instances, List<String> attributes,  List<Instance> parents_instances, String parent_attr) {
+  private DecTreeNode DecisionTreeLearning(List<Instance> instances, List<String> attributes,  List<Instance> parents_instances, String parent_attr_val) {
 
     if (instances.size() == 0){
       String label = pluralityClass(parents_instances);
-      return new DecTreeNode(label, null, parent_attr, true);
+      return new DecTreeNode(label, null, parent_attr_val, true);
     }
 
     if (allSameClass(instances)){
       String label = instances.get(0).label;
-      return new DecTreeNode(label, null, parent_attr, true);
+      return new DecTreeNode(label, null, parent_attr_val, true);
     }
 
     if (attributes.size() == 0){
       String label = pluralityClass(instances);
-      return new DecTreeNode(label, null, parent_attr, true);
+      return new DecTreeNode(label, null, parent_attr_val, true);
     }
 
     DecTreeNode subtree;
-    String max_att_name = getMaxEntropyAtt(instances, attributes);
-    DecTreeNode tree = new DecTreeNode(null, max_att_name, parent_attr, false);
+    String max_att_name = getMaxIgAtt(instances, attributes);
+    DecTreeNode tree = new DecTreeNode(null, max_att_name, parent_attr_val, false);
     List<String> max_att_values = this.attributeValues.get(max_att_name);
     Set<String> max_att_unique_vals = new HashSet<>(max_att_values);
     List<Instance> atts_vals_examples;
 
     for (String max_att_unique_val: max_att_unique_vals){
-      atts_vals_examples = getInstancesWithAttrVal(instances,attributes, max_att_name, max_att_unique_val);
+      atts_vals_examples = getInstancesWithAttrVal(instances, max_att_name, max_att_unique_val);
       List<String> attributes_new = new ArrayList<>(attributes);
       attributes_new.remove(getIndexByValue(attributes, max_att_name));
       subtree = DecisionTreeLearning(atts_vals_examples, attributes_new, instances, max_att_unique_val);
@@ -105,7 +105,7 @@ public class DecisionTreeImpl extends DecisionTree {
     return tree;
   }
 
-  private List<Instance> getInstancesWithAttrVal(List<Instance> instances,List<String> attributes, String att_name, String att_val){
+  private List<Instance> getInstancesWithAttrVal(List<Instance> instances, String att_name, String att_val){
     List<Instance> atts_vals_examples = new ArrayList<>();
     int att_idx = getAttributeIndex(att_name);
     for (Instance inst: instances){
@@ -115,14 +115,15 @@ public class DecisionTreeImpl extends DecisionTree {
     return atts_vals_examples;
   }
 
-  private String getMaxEntropyAtt(List<Instance> instances, List<String> attributes){
-    double current_att_e;
-    double max_att_e =-1;
-    String max_att_name="";
-
+  private String getMaxIgAtt(List<Instance> instances, List<String> attributes){
+    double current_att_e, current_ig, root_entropy;
+    double max_att_e = -1;
+    String max_att_name = "";
+    root_entropy=entropyRoot(instances);
     for (String att: attributes){
       current_att_e = entropyAttr(instances, att);
-      if (current_att_e > max_att_e){
+      current_ig = root_entropy - current_att_e;
+      if (current_ig > max_att_e){
         max_att_e = current_att_e;
         max_att_name = att;
       }
@@ -225,7 +226,6 @@ public class DecisionTreeImpl extends DecisionTree {
     }
     return -sum;
   }
-
 
 
   @Override
