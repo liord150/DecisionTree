@@ -164,7 +164,7 @@ public class DecisionTreeImpl extends DecisionTree {
     for (String att : attributes){
       att_entropy = entropyAttr(train.instances, att);
       System.out.print(att + " ");
-      System.out.println(root_entropy-att_entropy);
+      System.out.println( String.format( "%.5f", root_entropy-att_entropy ) );
     }
 
   }
@@ -239,7 +239,7 @@ public class DecisionTreeImpl extends DecisionTree {
       count++;
     }
     double accuracy = (double)(true_label)/(double)(test.instances.size());
-    System.out.println(accuracy);
+    System.out.println(String.format( "%.5f", accuracy ));
   }
 
     /**
