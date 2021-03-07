@@ -26,12 +26,13 @@
     * no more instances to go through, return a leaf with pluralityClass from the parents instances as a label.
     * all instances has the same label, return a leaf with this label
     * no more attributes left, return a leaf with pluralityClass from the instances as a label.
+ 
     if none of the above happened:
-    * get max ig attribute using getMaxIgAtt, builds not terminal tree with that attribute
+    * get max ig attribute using getMaxIgAtt, builds not terminal tree with that attribute.
     * builds a set of max ig attribute values
     * for each value, gets all instances with max ig attribute equals to the current value of the loop,
     and calling DecisionTreeImpl with this instances, the attributes minus the max ig attribute, and the current instances as parents.
-    finally, adding the tree builds as a child.
+    * finally, adding the tree builds as a child.
 
 2. **classify**  - Recursive function that travels on the decision tree, according to the instance attributes values.
 Stop condition is when arriving to a leaf. returns the label- this is the classification of the instance.
